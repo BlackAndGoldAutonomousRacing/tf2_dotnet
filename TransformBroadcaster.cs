@@ -16,7 +16,7 @@
 using System.Collections.Generic;
 using ROS2;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     public sealed class TransformBroadcaster
     {
@@ -25,15 +25,26 @@ namespace Ros2.Tf2DotNet
         /// <summary>
         /// The TF2 dynamic broadcaster qos profile.
         /// </summary>
-        public static QosProfile DynamicBroadcasterQosProfile { get; } = QosProfile.KeepLast(100);
+        public static QualityOfServiceProfile DynamicBroadcasterQosProfile { get{
+            //= QualityOfServiceProfile.KeepLast(100);
+            QualityOfServiceProfile qos = new QualityOfServiceProfile();
+            qos.SetHistory(HistoryPolicy.QOS_POLICY_HISTORY_KEEP_LAST,100);
+            return qos;
+        } } 
 
         
         /// <summary>
         /// The TF2 static broadcaster qos profile.
         /// </summary>
-        public static QosProfile StaticBroadcasterQosProfile { get; } = QosProfile.KeepLast(1).WithTransientLocal();
+        public static QualityOfServiceProfile StaticBroadcasterQosProfile { get{
+            //= QualityOfServiceProfile.KeepLast(1).WithTransientLocal();
+            QualityOfServiceProfile qos = new QualityOfServiceProfile();
+            qos.SetHistory(HistoryPolicy.QOS_POLICY_HISTORY_KEEP_LAST,1);
+            qos.SetDurability(DurabilityPolicy.QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
+            return qos;
+        } }  
 
-        public TransformBroadcaster(Node node, QosProfile qosProfile = null)
+        public TransformBroadcaster(Node node, QualityOfServiceProfile qosProfile = null)
         {
             if (qosProfile == null)
             {
@@ -54,10 +65,7 @@ namespace Ros2.Tf2DotNet
         {
             var message = new tf2_msgs.msg.TFMessage();
 
-            foreach (geometry_msgs.msg.TransformStamped value in transforms)
-            {
-                message.Transforms.Add(value);
-            }
+            message.Transforms = transforms.ToArray();
 
             tfPublisher.Publish(message);
         }

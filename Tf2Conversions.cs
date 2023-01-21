@@ -15,7 +15,7 @@
 
 using geometry_msgs.msg;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     public static class Tf2Conversions
     {

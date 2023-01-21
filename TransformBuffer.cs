@@ -17,7 +17,7 @@ using System;
 using builtin_interfaces.msg;
 using geometry_msgs.msg;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     // Using "Buffer" as type name like in c++ conflicts with "System.Buffer",
     // so using "TransformBuffer" instead.
@@ -58,8 +58,8 @@ namespace Ros2.Tf2DotNet
                 _handle,
                 transform.Header.Stamp.Sec,
                 transform.Header.Stamp.Nanosec,
-                transform.Header.FrameId,
-                transform.ChildFrameId,
+                transform.Header.Frame_id,
+                transform.Child_frame_id,
                 transform.Transform.Translation.X,
                 transform.Transform.Translation.Y,
                 transform.Transform.Translation.Z,

@@ -15,7 +15,7 @@
 
 using System;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     public class TransformException : Exception
     {

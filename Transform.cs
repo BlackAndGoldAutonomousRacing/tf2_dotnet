@@ -16,7 +16,7 @@
 using System.Runtime.InteropServices;
 using geometry_msgs.msg;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     [StructLayout(LayoutKind.Sequential)]
     internal struct Transform
@@ -37,8 +37,8 @@ namespace Ros2.Tf2DotNet
 
             transformStamped.Header.Stamp.Sec = Sec;
             transformStamped.Header.Stamp.Nanosec = Nanosec;
-            transformStamped.Header.FrameId = targetFrame;
-            transformStamped.ChildFrameId = sourceFrame;
+            transformStamped.Header.Frame_id = targetFrame;
+            transformStamped.Child_frame_id = sourceFrame;
             transformStamped.Transform.Translation.X = Translation_x;
             transformStamped.Transform.Translation.Y = Translation_y;
             transformStamped.Transform.Translation.Z = Translation_z;

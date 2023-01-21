@@ -15,7 +15,7 @@
 
 using System;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     // Mirror of Tf2DotnetExceptionType in C++, keep in Sync!
     internal enum Tf2ExceptionType : int

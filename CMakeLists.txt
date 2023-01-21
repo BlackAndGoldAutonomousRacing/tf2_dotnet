@@ -19,13 +19,14 @@ find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(tf2_msgs REQUIRED)
 find_package(builtin_interfaces REQUIRED)
-find_package(rcldotnet REQUIRED)
+find_package(ros2cs_common REQUIRED)
+find_package(ros2cs_core REQUIRED)
 
 find_package(dotnet_cmake_module REQUIRED)
 find_package(DotNETExtra REQUIRED)
 
 find_package(rclcpp REQUIRED)
-find_package(rcldotnet_common REQUIRED)
+
 
 if(NOT WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -49,14 +50,14 @@ set(CS_SOURCES
   TransformListener.cs
 )
 
-find_package(rcldotnet_common REQUIRED)
+# find_package(rcldotnet_common REQUIRED)
 #foreach(_assembly_dep ${rcldotnet_common_ASSEMBLIES_DLL})
 #  list(APPEND _assembly_deps_dll "${_assembly_dep}")
 #endforeach()
 
 set(_assembly_deps_dll
-    ${rcldotnet_common_ASSEMBLIES_DLL}
-    ${rcldotnet_ASSEMBLIES_DLL}
+    ${ros2cs_common_ASSEMBLIES_DLL}
+    ${ros2cs_core_ASSEMBLIES_DLL}
     ${std_msgs_ASSEMBLIES_DLL}
     ${geometry_msgs_ASSEMBLIES_DLL}
     ${tf2_msgs_ASSEMBLIES_DLL}

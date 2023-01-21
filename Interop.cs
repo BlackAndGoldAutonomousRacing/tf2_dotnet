@@ -15,9 +15,9 @@
 
 using System;
 using System.Runtime.InteropServices;
-using ROS2.Utils;
+using ROS2;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     internal static class Interop
     {

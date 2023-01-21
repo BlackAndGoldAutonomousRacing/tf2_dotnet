@@ -18,7 +18,7 @@ using geometry_msgs.msg;
 using ROS2;
 using tf2_msgs.msg;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     public sealed class TransformListener
     {
@@ -31,12 +31,23 @@ namespace Ros2.Tf2DotNet
         /// <summary>
         /// The TF2 dynamic listener qos profile.
         /// </summary>
-        public static QosProfile DynamicListenerQosProfile { get; } = QosProfile.KeepLast(100);
+        public static QualityOfServiceProfile DynamicListenerQosProfile { get{
+            //= QualityOfServiceProfile.KeepLast(100);
+            QualityOfServiceProfile qos = new QualityOfServiceProfile();
+            qos.SetHistory(HistoryPolicy.QOS_POLICY_HISTORY_KEEP_LAST,100);
+            return qos;
+        } }
 
         /// <summary>
         /// The TF2 static listener qos profile.
         /// </summary>
-        public static QosProfile StaticListenerQosProfile { get; } = QosProfile.KeepLast(100).WithTransientLocal();
+        public static QualityOfServiceProfile StaticListenerQosProfile { get{
+            //= QualityOfServiceProfile.KeepLast(1).WithTransientLocal();
+            QualityOfServiceProfile qos = new QualityOfServiceProfile();
+            qos.SetHistory(HistoryPolicy.QOS_POLICY_HISTORY_KEEP_LAST,1);
+            qos.SetDurability(DurabilityPolicy.QOS_POLICY_DURABILITY_TRANSIENT_LOCAL);
+            return qos;
+        } }
 
         public TransformListener(TransformBuffer buffer, Node node)
         {

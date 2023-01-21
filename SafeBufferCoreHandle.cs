@@ -16,7 +16,7 @@
 using System.Diagnostics;
 using Microsoft.Win32.SafeHandles;
 
-namespace Ros2.Tf2DotNet
+namespace ROS2.Tf2DotNet
 {
     /// <summary>
     /// Safe handle representing a tf2::BufferCore.
