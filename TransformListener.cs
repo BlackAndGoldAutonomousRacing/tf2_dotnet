@@ -49,7 +49,7 @@ namespace ROS2.Tf2DotNet
             return qos;
         } }
 
-        public TransformListener(TransformBuffer buffer, Node node)
+        public TransformListener(TransformBuffer buffer, INode node)
         {
             _buffer = buffer;
 
