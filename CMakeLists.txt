@@ -28,6 +28,7 @@ find_package(DotNETExtra REQUIRED)
 find_package(rclcpp REQUIRED)
 
 
+
 if(NOT WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
@@ -36,7 +37,42 @@ if(NOT WIN32)
   endif()
 endif()
 
-set(CSHARP_TARGET_FRAMEWORK "netstandard2.0")
+# set(CSHARP_TARGET_FRAMEWORK "netstandard2.0")
+
+set(NUGET_PKGS_BASE ${PROJECT_BINARY_DIR}/../../../external/nuget_packages)
+
+
+if(UNIX)
+  find_program(LSB_RELEASE_EXEC lsb_release)
+  execute_process(COMMAND ${LSB_RELEASE_EXEC} -rs
+      OUTPUT_VARIABLE LSB_RELEASE_ID_SHORT
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  if("${LSB_RELEASE_ID_SHORT}" STREQUAL "22.04")
+    # Default Mono C# vresion of 4.5 has bug in System.Numeric.Vectors. Overriding.
+    set(CSBUILD_TOOL "Mono")
+    set(CSHARP_TARGET_FRAMEWORK_VERSION "4.8")
+    set(CS_ASM_DEP_DLLS_EXTRA
+        # for Mono compatibility
+        "System.Numerics"
+        "System.Threading"
+        "System.Security.Permissions"
+    )
+  else()
+    set(CSBUILD_TOOL "DotNetCore")
+    set(CSHARP_TARGET_FRAMEWORK "netcoreapp3.1")
+    set(CS_ASM_DEP_DLLS_EXTRA
+        ${NUGET_PKGS_BASE}/System.Threading.dll
+        ${NUGET_PKGS_BASE}/System.Security.Permissions.dll
+    )
+  endif()
+else()
+  set(CSBUILD_TOOL "DotNetCore")
+  set(CS_ASM_DEP_DLLS_EXTRA
+      ${NUGET_PKGS_BASE}/System.Threading.dll
+      ${NUGET_PKGS_BASE}/System.Security.Permissions.dll
+  )
+endif()
 
 set(CS_SOURCES
   Exceptions.cs
