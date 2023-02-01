@@ -36,7 +36,7 @@ if(NOT WIN32)
   endif()
 endif()
 
-set(CSHARP_TARGET_FRAMEWORK "netstandard2.0")
+set(CSHARP_TARGET_FRAMEWORK "netcoreapp3.1")
 
 set(CS_SOURCES
   Exceptions.cs
@@ -50,10 +50,6 @@ set(CS_SOURCES
   TransformListener.cs
 )
 
-# find_package(rcldotnet_common REQUIRED)
-#foreach(_assembly_dep ${rcldotnet_common_ASSEMBLIES_DLL})
-#  list(APPEND _assembly_deps_dll "${_assembly_dep}")
-#endforeach()
 
 set(_assembly_deps_dll
     ${ros2cs_common_ASSEMBLIES_DLL}
@@ -64,6 +60,7 @@ set(_assembly_deps_dll
     ${test_msgs_ASSEMBLIES_DLL}
     ${builtin_interfaces_ASSEMBLIES_DLL}
     ${rcldotnet_ASSEMBLIES_DLL}
+    ${NUGET_PKGS_BASE}/System.Numerics.Vectors
 )
 
 
