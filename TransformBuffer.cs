@@ -14,6 +14,7 @@
  */
 
 using System;
+using System.Numerics;
 using builtin_interfaces.msg;
 using geometry_msgs.msg;
 
@@ -402,6 +403,42 @@ namespace ROS2.Tf2DotNet
             Tf2ExceptionHelper.ThrowIfHasException(exceptionType);
 
             return result == 1;
+        }
+
+        /// <summary>
+        /// transforms a vector
+        /// </summary>
+        /// <param name="position">the vector to be transfomed</param>
+        /// <param name="transform">The transform with which we will transform the vector</param>
+        /// <returns>the transformed vector</returns>
+        public System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.TransformStamped transform) {
+            // convert this transform's rotation into a System.Numerics.Quaternion for the rotation
+            System.Numerics.Quaternion rotator = new System.Numerics.Quaternion((float) transform.Transform.Rotation.X,(float) transform.Transform.Rotation.Y,(float) transform.Transform.Rotation.Z,(float) transform.Transform.Rotation.W);
+
+            // translate
+            System.Numerics.Vector3 translated = new System.Numerics.Vector3((float) (position.X + transform.Transform.Translation.X),(float) (position.Y + transform.Transform.Translation.Y), (float) (position.Z + transform.Transform.Translation.Z));
+
+            // rotate
+            return System.Numerics.Vector3.Transform(translated,rotator);
+        }
+
+        /// <summary>
+        /// transforms a Point as if it were a vector
+        /// </summary>
+        /// <remarks>
+        /// Note that the returned point only has floating point precision. Double precision is lost!
+        /// </remarks>
+        /// 
+        /// <param name="point">the point to be transfomed</param>
+        /// <param name="transform">The transform with which we will transform the vector</param>
+        /// <returns>the transformed vector</returns>
+        public geometry_msgs.msg.Point Transform(geometry_msgs.msg.Point point, geometry_msgs.msg.TransformStamped transform) {
+            System.Numerics.Vector3 transVec = Transform(new System.Numerics.Vector3((float) point.X,(float)  point.Y,(float)  point.Z), transform);
+            geometry_msgs.msg.Point transPoint = new geometry_msgs.msg.Point();
+            transPoint.X = transVec.X;
+            transPoint.Y = transVec.Y;
+            transPoint.Z = transVec.Z;
+            return transPoint;
         }
 
         private void ThrowIfDisposed()

@@ -28,6 +28,7 @@ find_package(DotNETExtra REQUIRED)
 find_package(rclcpp REQUIRED)
 
 
+
 if(NOT WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
@@ -60,7 +61,6 @@ set(_assembly_deps_dll
     ${test_msgs_ASSEMBLIES_DLL}
     ${builtin_interfaces_ASSEMBLIES_DLL}
     ${rcldotnet_ASSEMBLIES_DLL}
-    ${NUGET_PKGS_BASE}/System.Numerics.Vectors
 )
 
 
