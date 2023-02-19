@@ -411,15 +411,25 @@ namespace ROS2.Tf2DotNet
         /// <param name="position">the vector to be transfomed</param>
         /// <param name="transform">The transform with which we will transform the vector</param>
         /// <returns>the transformed vector</returns>
-        public System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.TransformStamped transform) {
+        public System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.Transform transform) {
             // convert this transform's rotation into a System.Numerics.Quaternion for the rotation
-            System.Numerics.Quaternion rotator = new System.Numerics.Quaternion((float) transform.Transform.Rotation.X,(float) transform.Transform.Rotation.Y,(float) transform.Transform.Rotation.Z,(float) transform.Transform.Rotation.W);
+            System.Numerics.Quaternion rotator = new System.Numerics.Quaternion((float) transform.Rotation.X,(float) transform.Rotation.Y,(float) transform.Rotation.Z,(float) transform.Rotation.W);
 
             // translate
-            System.Numerics.Vector3 translated = new System.Numerics.Vector3((float) (position.X + transform.Transform.Translation.X),(float) (position.Y + transform.Transform.Translation.Y), (float) (position.Z + transform.Transform.Translation.Z));
+            System.Numerics.Vector3 translated = new System.Numerics.Vector3((float) (position.X + transform.Translation.X),(float) (position.Y + transform.Translation.Y), (float) (position.Z + transform.Translation.Z));
 
             // rotate
             return System.Numerics.Vector3.Transform(translated,rotator);
+        }
+
+        /// <summary>
+        /// transforms a vector
+        /// </summary>
+        /// <param name="position">the vector to be transfomed</param>
+        /// <param name="transform">The transform with which we will transform the vector</param>
+        /// <returns>the transformed vector</returns>
+        public System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.TransformStamped transform) {
+            return Transform(position, transform.Transform);
         }
 
         /// <summary>
@@ -439,6 +449,47 @@ namespace ROS2.Tf2DotNet
             transPoint.Y = transVec.Y;
             transPoint.Z = transVec.Z;
             return transPoint;
+        }
+
+        /// <summary>
+        /// returns a transform that transforms from the start vector to the end vector, in the plane orthogonal to the vector 0,0,1 (Unit Z axis)
+        /// </summary>
+        /// <remarks>
+        /// This method only uses float precision
+        /// </remarks>
+        public geometry_msgs.msg.Transform TransformFromVectors(Vector2 start, Vector2 end) {
+            return TransformFromVectors(start, end, System.Numerics.Vector3.UnitZ);
+        }
+
+        /// <summary>
+        /// returns a transform that transforms from the start vector to the end vector, in the plane orthogonal to the thirdAxis vector ([0,0,1] by default)
+        /// </summary>
+        /// <remarks>
+        /// This method only uses float precision
+        /// </remarks>
+        public geometry_msgs.msg.Transform TransformFromVectors(Vector2 start, Vector2 end, System.Numerics.Vector3 thirdAxis) {
+            float angle = (float) Math.Acos(Vector2.Dot(start,end));
+
+            // TODO check this
+            if (Math.Atan2(start.Y, start.X) > Math.Atan2(end.Y, end.X)) {
+                angle *= -1;
+            }
+
+            System.Numerics.Vector2 translation = end-start;
+
+            System.Numerics.Quaternion q = new System.Numerics.Quaternion(new System.Numerics.Vector3(0,0,1),angle);
+
+            var msg = new geometry_msgs.msg.Transform();
+            msg.Translation.X = translation.X;
+            msg.Translation.Y = translation.Y;
+
+
+            msg.Rotation.X = q.X;
+            msg.Rotation.Y = q.Y;
+            msg.Rotation.Z = q.Z;
+            msg.Rotation.W = q.W;
+
+            return msg;
         }
 
         private void ThrowIfDisposed()
