@@ -451,33 +451,26 @@ namespace ROS2.Tf2DotNet
             return transPoint;
         }
 
+  
         /// <summary>
-        /// returns a transform that transforms from the start vector to the end vector, in the plane orthogonal to the vector 0,0,1 (Unit Z axis)
+        /// returns a transform that transforms from the start vector to the end vector, in the plane orthogonal to both vectors
         /// </summary>
         /// <remarks>
         /// This method only uses float precision
         /// </remarks>
-        public geometry_msgs.msg.Transform TransformFromVectors(Vector2 start, Vector2 end) {
-            return TransformFromVectors(start, end, System.Numerics.Vector3.UnitZ);
-        }
+        public geometry_msgs.msg.Transform TransformFromVectors(Vector3 start, Vector3 end) {
+            
+            System.Numerics.Vector3 crossProduct = System.Numerics.Vector3.Cross(start,end);
 
-        /// <summary>
-        /// returns a transform that transforms from the start vector to the end vector, in the plane orthogonal to the thirdAxis vector ([0,0,1] by default)
-        /// </summary>
-        /// <remarks>
-        /// This method only uses float precision
-        /// </remarks>
-        public geometry_msgs.msg.Transform TransformFromVectors(Vector2 start, Vector2 end, System.Numerics.Vector3 thirdAxis) {
-            float angle = (float) Math.Acos(Vector2.Dot(start,end));
 
-            // TODO check this
-            if (Math.Atan2(start.Y, start.X) > Math.Atan2(end.Y, end.X)) {
-                angle *= -1;
-            }
+            float angle = crossProduct.Length;
 
-            System.Numerics.Vector2 translation = end-start;
+            crossProduct /= crossProduct.Length; // convert to unit vector for quaternion
 
-            System.Numerics.Quaternion q = new System.Numerics.Quaternion(new System.Numerics.Vector3(0,0,1),angle);
+            crossProduct *= Math.Sin(angle/2) * crossProduct; // calculate imaginary components of quaternion
+
+            // create quaternion which is rotation of magnitude <angle> about the axis defined by <crossProduct>
+            System.Numerics.Quaternion q = new System.Numerics.Quaternion(Math.Cos(angle/2), crossProduct.X, crossProduct.Y, crossProduct.Z);
 
             var msg = new geometry_msgs.msg.Transform();
             msg.Translation.X = translation.X;
