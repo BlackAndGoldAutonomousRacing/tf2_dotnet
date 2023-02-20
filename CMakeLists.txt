@@ -27,8 +27,6 @@ find_package(DotNETExtra REQUIRED)
 
 find_package(rclcpp REQUIRED)
 
-
-
 if(NOT WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--no-undefined")
@@ -37,7 +35,7 @@ if(NOT WIN32)
   endif()
 endif()
 
-set(CSHARP_TARGET_FRAMEWORK "netcoreapp3.1")
+set(CSHARP_TARGET_FRAMEWORK "net6.0")
 
 set(CS_SOURCES
   Exceptions.cs
@@ -51,18 +49,15 @@ set(CS_SOURCES
   TransformListener.cs
 )
 
-
 set(_assembly_deps_dll
     ${ros2cs_common_ASSEMBLIES_DLL}
     ${ros2cs_core_ASSEMBLIES_DLL}
     ${std_msgs_ASSEMBLIES_DLL}
     ${geometry_msgs_ASSEMBLIES_DLL}
     ${tf2_msgs_ASSEMBLIES_DLL}
-    ${test_msgs_ASSEMBLIES_DLL}
     ${builtin_interfaces_ASSEMBLIES_DLL}
     ${rcldotnet_ASSEMBLIES_DLL}
 )
-
 
 add_dotnet_library(${PROJECT_NAME}_assemblies
   SOURCES
@@ -109,11 +104,9 @@ set(_assemblies_dep_dlls
     ${rcldotnet_ASSEMBLIES_DLL}
     ${std_msgs_ASSEMBLIES_DLL}
     ${geometry_msgs_ASSEMBLIES_DLL}
-    ${test_msgs_ASSEMBLIES_DLL}
     ${builtin_interfaces_ASSEMBLIES_DLL}
     ${rcldotnet_ASSEMBLIES_DLL}
 )
-
 
 ament_export_dependencies(ament_cmake)
 ament_export_dependencies(builtin_interfaces)
