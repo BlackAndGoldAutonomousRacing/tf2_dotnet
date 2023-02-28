@@ -464,7 +464,7 @@ namespace ROS2.Tf2DotNet
 
             System.Numerics.Vector3 translation = end-start;
 
-            float angle = crossProduct.Length();
+            float angle = (float) Math.Asin(crossProduct.Length() / start.Length() / end.Length()); // TODO check this calculation
 
             crossProduct = crossProduct / crossProduct.Length(); // convert to unit vector for quaternion
 
