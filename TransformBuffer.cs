@@ -411,7 +411,7 @@ namespace ROS2.Tf2DotNet
         /// <param name="position">the vector to be transfomed</param>
         /// <param name="transform">The transform with which we will transform the vector</param>
         /// <returns>the transformed vector</returns>
-        public System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.Transform transform) {
+        public static System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.Transform transform) {
             // convert this transform's rotation into a System.Numerics.Quaternion for the rotation
             System.Numerics.Quaternion rotator = new System.Numerics.Quaternion((float) transform.Rotation.X,(float) transform.Rotation.Y,(float) transform.Rotation.Z,(float) transform.Rotation.W);
 
@@ -428,7 +428,7 @@ namespace ROS2.Tf2DotNet
         /// <param name="position">the vector to be transfomed</param>
         /// <param name="transform">The transform with which we will transform the vector</param>
         /// <returns>the transformed vector</returns>
-        public System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.TransformStamped transform) {
+        public static System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.TransformStamped transform) {
             return Transform(position, transform.Transform);
         }
 
@@ -442,7 +442,7 @@ namespace ROS2.Tf2DotNet
         /// <param name="point">the point to be transfomed</param>
         /// <param name="transform">The transform with which we will transform the vector</param>
         /// <returns>the transformed vector</returns>
-        public geometry_msgs.msg.Point Transform(geometry_msgs.msg.Point point, geometry_msgs.msg.TransformStamped transform) {
+        public static geometry_msgs.msg.Point Transform(geometry_msgs.msg.Point point, geometry_msgs.msg.TransformStamped transform) {
             System.Numerics.Vector3 transVec = Transform(new System.Numerics.Vector3((float) point.X,(float)  point.Y,(float)  point.Z), transform);
             geometry_msgs.msg.Point transPoint = new geometry_msgs.msg.Point();
             transPoint.X = transVec.X;
@@ -451,18 +451,13 @@ namespace ROS2.Tf2DotNet
             return transPoint;
         }
 
-  
         /// <summary>
-        /// returns a transform that transforms from the start vector to the end vector, in the plane orthogonal to both vectors
+        /// returns the quaternion rotation from the start vector to the end vector, in the plane orthogonal to both vectors
         /// </summary>
-        /// <remarks>
-        /// This method only uses float precision
-        /// </remarks>
-        public geometry_msgs.msg.Transform TransformFromVectors(System.Numerics.Vector3 start, System.Numerics.Vector3 end) {
-            
+        public static System.Numerics.Quaternion QuaternionFromVectors(System.Numerics.Vector3 start, System.Numerics.Vector3 end) {
             System.Numerics.Vector3 crossProduct = System.Numerics.Vector3.Cross(start,end);
 
-            System.Numerics.Vector3 translation = end-start;
+            
 
             float angle = (float) Math.Asin(crossProduct.Length() / start.Length() / end.Length()); // TODO check this calculation
 
@@ -471,8 +466,22 @@ namespace ROS2.Tf2DotNet
             crossProduct = System.Numerics.Vector3.Multiply((float) Math.Sin(angle/2),crossProduct); // calculate imaginary components of quaternion
 
             // create quaternion which is rotation of magnitude <angle> about the axis defined by <crossProduct>
-            System.Numerics.Quaternion q = new System.Numerics.Quaternion((float) Math.Cos(angle/2), crossProduct.X, crossProduct.Y, crossProduct.Z);
+            return new System.Numerics.Quaternion((float) Math.Cos(angle/2), crossProduct.X, crossProduct.Y, crossProduct.Z);
 
+        }
+  
+        /// <summary>
+        /// returns a transform that transforms from the start vector to the end vector, in the plane orthogonal to both vectors
+        /// </summary>
+        /// <remarks>
+        /// This method only uses float precision
+        /// </remarks>
+        public static geometry_msgs.msg.Transform TransformFromVectors(System.Numerics.Vector3 start, System.Numerics.Vector3 end) {
+            
+            System.Numerics.Vector3 translation = end-start;
+
+            System.Numerics.Quaternion q = QuaternionFromVectors(start, end);
+            
             var msg = new geometry_msgs.msg.Transform();
             msg.Translation.X = translation.X;
             msg.Translation.Y = translation.Y;
