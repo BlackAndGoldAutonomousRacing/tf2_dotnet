@@ -414,12 +414,12 @@ namespace ROS2.Tf2DotNet
         public static System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.Transform transform) {
             // convert this transform's rotation into a System.Numerics.Quaternion for the rotation
             System.Numerics.Quaternion rotator = new System.Numerics.Quaternion((float) transform.Rotation.X,(float) transform.Rotation.Y,(float) transform.Rotation.Z,(float) transform.Rotation.W);
-
+        
             // translate
             System.Numerics.Vector3 translated = new System.Numerics.Vector3((float) (position.X + transform.Translation.X),(float) (position.Y + transform.Translation.Y), (float) (position.Z + transform.Translation.Z));
 
             // rotate
-            return System.Numerics.Vector3.Transform(translated,rotator);
+            return System.Numerics.Vector3.Transform(position,rotator);
         }
 
         /// <summary>
@@ -445,6 +445,25 @@ namespace ROS2.Tf2DotNet
         public static geometry_msgs.msg.Point Transform(geometry_msgs.msg.Point point, geometry_msgs.msg.TransformStamped transform) {
             System.Numerics.Vector3 transVec = Transform(new System.Numerics.Vector3((float) point.X,(float)  point.Y,(float)  point.Z), transform);
             geometry_msgs.msg.Point transPoint = new geometry_msgs.msg.Point();
+            transPoint.X = transVec.X;
+            transPoint.Y = transVec.Y;
+            transPoint.Z = transVec.Z;
+            return transPoint;
+        }
+
+        /// <summary>
+        /// transforms a Point as if it were a vector
+        /// </summary>
+        /// <remarks>
+        /// Note that the returned point only has floating point precision. Double precision is lost!
+        /// </remarks>
+        /// 
+        /// <param name="point">the point to be transfomed</param>
+        /// <param name="transform">The transform with which we will transform the vector</param>
+        /// <returns>the transformed vector</returns>
+        public static geometry_msgs.msg.Point32 Transform(geometry_msgs.msg.Point32 point, geometry_msgs.msg.TransformStamped transform) {
+            System.Numerics.Vector3 transVec = Transform(new System.Numerics.Vector3((float) point.X,(float)  point.Y,(float)  point.Z), transform);
+            geometry_msgs.msg.Point32 transPoint = new geometry_msgs.msg.Point32();
             transPoint.X = transVec.X;
             transPoint.Y = transVec.Y;
             transPoint.Z = transVec.Z;
