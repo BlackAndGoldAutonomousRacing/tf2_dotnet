@@ -414,12 +414,15 @@ namespace ROS2.Tf2DotNet
         public static System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.Transform transform) {
             // convert this transform's rotation into a System.Numerics.Quaternion for the rotation
             System.Numerics.Quaternion rotator = new System.Numerics.Quaternion((float) transform.Rotation.X,(float) transform.Rotation.Y,(float) transform.Rotation.Z,(float) transform.Rotation.W);
-        
-            // translate
-            System.Numerics.Vector3 translated = new System.Numerics.Vector3((float) (position.X + transform.Translation.X),(float) (position.Y + transform.Translation.Y), (float) (position.Z + transform.Translation.Z));
 
             // rotate
-            return System.Numerics.Vector3.Transform(position,rotator);
+            System.Numerics.Vector3 rotated = System.Numerics.Vector3.Transform(position,rotator);
+            
+            // translate
+            System.Numerics.Vector3 translated = new System.Numerics.Vector3((float) (rotated.X + transform.Translation.X),(float) (rotated.Y + transform.Translation.Y), (float) (rotated.Z + transform.Translation.Z));
+
+            
+            return translated;
         }
 
         /// <summary>

@@ -70,6 +70,9 @@ namespace ROS2.Tf2DotNet
 
         private void SubscriptionCallback(TFMessage message, bool isStatic)
         {
+            // foreach (var trans in message.Transforms) {
+            //     System.Console.WriteLine($"{(isStatic ? "STATIC" : "")} {trans.Header.Frame_id} -> {trans.Child_frame_id}");
+            // }
             foreach (TransformStamped transform in message.Transforms)
             {
                 _buffer.SetTransform(transform, "ros2_dotnet", isStatic);
