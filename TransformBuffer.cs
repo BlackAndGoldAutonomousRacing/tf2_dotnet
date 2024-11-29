@@ -405,6 +405,25 @@ namespace ROS2.Tf2DotNet
             return result == 1;
         }
 
+
+        /// <summary>
+        /// transforms a vector
+        /// </summary>
+        /// <param name="position">the vector to be transfomed</param>
+        /// <param name="transform">The transform with which we will transform the vector</param>
+        /// <returns>the transformed vector</returns>
+        public static System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, System.Numerics.Vector3 translation, System.Numerics.Quaternion rotation) {
+
+            // rotate
+            System.Numerics.Vector3 rotated = System.Numerics.Vector3.Transform(position,rotation);
+            
+            // translate
+            System.Numerics.Vector3 translated = translation + rotated;
+
+            
+            return translated;
+        }
+
         /// <summary>
         /// transforms a vector
         /// </summary>
@@ -412,17 +431,13 @@ namespace ROS2.Tf2DotNet
         /// <param name="transform">The transform with which we will transform the vector</param>
         /// <returns>the transformed vector</returns>
         public static System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, geometry_msgs.msg.Transform transform) {
+
             // convert this transform's rotation into a System.Numerics.Quaternion for the rotation
             System.Numerics.Quaternion rotator = new System.Numerics.Quaternion((float) transform.Rotation.X,(float) transform.Rotation.Y,(float) transform.Rotation.Z,(float) transform.Rotation.W);
 
-            // rotate
-            System.Numerics.Vector3 rotated = System.Numerics.Vector3.Transform(position,rotator);
+            System.Numerics.Vector3 translation = new System.Numerics.Vector3((float) transform.Translation.X,(float) transform.Translation.Y, (float) transform.Translation.Z);
             
-            // translate
-            System.Numerics.Vector3 translated = new System.Numerics.Vector3((float) (rotated.X + transform.Translation.X),(float) (rotated.Y + transform.Translation.Y), (float) (rotated.Z + transform.Translation.Z));
-
-            
-            return translated;
+            return Transform(position, translation, rotator);
         }
 
         /// <summary>
