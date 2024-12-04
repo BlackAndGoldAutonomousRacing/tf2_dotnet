@@ -1,4 +1,5 @@
-/* Copyright 2022 Stefan Hoffmann <stefan.hoffmann@schiller.de>
+/* Copyright 2024 Alec Pannunzio <apun189@gmail.com>
+ * Copyright 2022 Stefan Hoffmann <stefan.hoffmann@schiller.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -486,6 +487,22 @@ namespace ROS2.Tf2DotNet
             transPoint.Y = transVec.Y;
             transPoint.Z = transVec.Z;
             return transPoint;
+        }
+        
+        /// <summary>
+        /// Transforms a point with a rotation in the z-axis. Useful if you don't want to work with quaternions
+        /// </summary>
+        /// <param name="position">The coordinate to transform</param>
+        /// <param name="translation">the translation of the transform</param>
+        /// <param name="rotation">the rotation in the z axis</param>
+        /// <returns></returns>
+        public static System.Numerics.Vector3 Transform(System.Numerics.Vector3 position, System.Numerics.Vector3 translation, float rotation) {
+            System.Numerics.Vector3 transformed = position - translation;
+            float r = (transformed).Length();
+            float theta = MathF.Atan2(transformed.Y, transformed.X) - (rotation);
+            transformed.X = (r * MathF.Cos(theta));
+            transformed.Y = (r*MathF.Sin(theta));
+            return transformed;
         }
 
         /// <summary>
